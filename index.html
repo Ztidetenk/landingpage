@@ -1,0 +1,252 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  .lp{font-family:'DM Sans',sans-serif;color:var(--color-text-primary);max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+  .tag{display:inline-block;background:var(--color-background-info);color:var(--color-text-info);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:var(--border-radius-md);margin-bottom:1rem}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;font-weight:700;margin-bottom:1rem}
+  h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;margin-bottom:1rem}
+  .sub{font-size:1.1rem;color:var(--color-text-secondary);line-height:1.7;max-width:600px}
+  .divider{border:none;border-top:.5px solid var(--color-border-tertiary);margin:2.5rem 0}
+  .section-label{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:1.5rem}
+
+  /* Hero */
+  .hero{text-align:center;padding:2.5rem 0 2rem}
+  .hero .stat-bar{display:flex;justify-content:center;gap:2rem;margin-top:2rem;flex-wrap:wrap}
+  .stat-item{text-align:center}
+  .stat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--color-text-primary)}
+  .stat-l{font-size:12px;color:var(--color-text-secondary)}
+
+  /* ICP */
+  .icp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .icp-card{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+  .icp-name{font-weight:500;font-size:15px;margin-bottom:4px}
+  .icp-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+
+  /* Pain points */
+  .pain-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .pain-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:1.6}
+  .pain-list li::before{content:'';display:block;width:6px;height:6px;border-radius:50%;background:#E24B4A;margin-top:7px;flex-shrink:0}
+
+  /* Value prop */
+  .vp-block{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;border-left:3px solid var(--color-border-info)}
+  .vp-block p{font-size:1.05rem;line-height:1.75;color:var(--color-text-primary)}
+
+  /* Pricing */
+  .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .price-card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem}
+  .price-card.featured{border:2px solid var(--color-border-info)}
+  .plan-badge{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+  .plan-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:.3rem}
+  .plan-price{font-size:2rem;font-weight:500;margin-bottom:.2rem}
+  .plan-price span{font-size:13px;color:var(--color-text-secondary);font-weight:400}
+  .plan-desc{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;line-height:1.5}
+  .plan-features{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .plan-features li{font-size:13px;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  .plan-features li::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--color-text-success);margin-top:6px;flex-shrink:0}
+  .popular-badge{display:inline-block;background:var(--color-background-info);color:var(--color-text-info);font-size:11px;padding:3px 10px;border-radius:var(--border-radius-md);margin-bottom:.5rem}
+
+  /* Guarantee */
+  .guarantee-box{background:var(--color-background-success);border-radius:var(--border-radius-lg);padding:1.5rem;display:flex;gap:1rem;align-items:flex-start}
+  .g-icon{width:40px;height:40px;background:var(--color-background-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:.5px solid var(--color-border-success)}
+  .g-icon svg{width:20px;height:20px}
+  .guarantee-box h3{font-size:15px;font-weight:500;margin-bottom:.4rem;color:var(--color-text-success)}
+  .guarantee-box p{font-size:13px;color:var(--color-text-success);line-height:1.6}
+
+  /* Competitor */
+  .comp-table{width:100%;border-collapse:collapse;font-size:13px}
+  .comp-table th{text-align:left;padding:8px 10px;font-weight:500;border-bottom:.5px solid var(--color-border-secondary);color:var(--color-text-secondary);font-size:12px}
+  .comp-table td{padding:10px;border-bottom:.5px solid var(--color-border-tertiary);vertical-align:middle}
+  .comp-table tr:last-child td{border-bottom:none}
+  .comp-table .us{font-weight:500;color:var(--color-text-success)}
+  .check{display:inline-block;width:16px;height:16px;background:var(--color-background-success);border-radius:50%;text-align:center;line-height:16px;font-size:10px;color:var(--color-text-success)}
+  .cross{display:inline-block;width:16px;height:16px;background:var(--color-background-danger);border-radius:50%;text-align:center;line-height:16px;font-size:10px;color:var(--color-text-danger)}
+
+  /* CTA */
+  .cta-section{text-align:center;padding:2.5rem 0}
+  .cta-btn{display:inline-block;background:var(--color-text-primary);color:var(--color-background-primary);border:none;padding:.9rem 2rem;border-radius:var(--border-radius-md);font-size:15px;font-weight:500;cursor:pointer;transition:opacity .15s}
+  .cta-btn:hover{opacity:.85}
+  .cta-note{font-size:12px;color:var(--color-text-secondary);margin-top:.6rem}
+</style>
+
+<div class="lp">
+
+  <div class="hero">
+    <div class="tag">Money Clarity — 2026</div>
+    <h1>You earn money every month.<br><em>But where does it go?</em></h1>
+    <p class="sub" style="margin:0 auto">Most people can't answer that question. Not because they're careless — but because every tool that exists was built for accountants, not real life.</p>
+    <div class="stat-bar">
+      <div class="stat-item"><div class="stat-n">74%</div><div class="stat-l">of adults can't explain last month's spend</div></div>
+      <div class="stat-item"><div class="stat-n">$312</div><div class="stat-l">average monthly "mystery spending"</div></div>
+      <div class="stat-item"><div class="stat-n">6 min</div><div class="stat-l">is all it takes with the right system</div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ICP -->
+  <div class="section-label">Who this is for</div>
+  <h2>Your ideal customer profile</h2>
+  <div class="icp-grid">
+    <div class="icp-card">
+      <div class="icp-name">The Overwhelmed Professional</div>
+      <div class="icp-desc">25–40, decent income, no idea why savings never grow. Too busy to reconcile bank statements, too stressed to ignore it.</div>
+    </div>
+    <div class="icp-card">
+      <div class="icp-name">The Fresh Graduate</div>
+      <div class="icp-desc">First real salary, first real expenses. Subscriptions pile up invisibly. Needs clarity before bad habits cement.</div>
+    </div>
+    <div class="icp-card">
+      <div class="icp-name">The Anxious Saver</div>
+      <div class="icp-desc">Saves diligently but tracks nothing. Feels financial anxiety despite having money — because visibility, not income, is the actual problem.</div>
+    </div>
+    <div class="icp-card">
+      <div class="icp-name">The Couple in Conflict</div>
+      <div class="icp-desc">Two incomes, two spending styles, zero shared visibility. Arguments about money rooted in a data problem, not a relationship problem.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Pain Points -->
+  <div class="section-label">Why they struggle</div>
+  <h2>The real reasons money disappears</h2>
+  <ul class="pain-list">
+    <li>Subscriptions auto-renew silently — Netflix, Spotify, cloud storage, forgotten trials that become monthly charges</li>
+    <li>Cash and card spending live in different mental buckets, never reconciled</li>
+    <li>Most budgeting apps require 45-minute weekly rituals that nobody actually does</li>
+    <li>Emotional spending (stress, boredom, social pressure) is invisible in spreadsheets</li>
+    <li>Banking apps show transactions, not patterns — they describe history, not behavior</li>
+    <li>No single place to see income, fixed costs, variable spend and savings in one honest view</li>
+  </ul>
+
+  <hr class="divider">
+
+  <!-- Value Prop -->
+  <div class="section-label">Value proposition</div>
+  <h2>One clear promise</h2>
+  <div class="vp-block">
+    <p><strong>FlowTrack</strong> gives you a complete, honest picture of where your money goes — updated automatically, readable in under 5 minutes, and built around your actual life, not a finance textbook. You stop wondering. You start choosing.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:1rem">
+    <div class="icp-card"><div class="icp-name">Automatic</div><div class="icp-desc">Connects to your accounts. No manual entry. No weekly ritual.</div></div>
+    <div class="icp-card"><div class="icp-name">Visual</div><div class="icp-desc">Flow diagrams, not tables. You see the money move, not just the numbers.</div></div>
+    <div class="icp-card"><div class="icp-name">Behavioral</div><div class="icp-desc">Flags patterns over time, not just one-off transactions.</div></div>
+    <div class="icp-card"><div class="icp-name">Private</div><div class="icp-desc">Read-only bank connection. Zero write access. Data never sold.</div></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Pricing -->
+  <div class="section-label">Pricing strategy</div>
+  <h2>Three clear tiers</h2>
+  <div class="pricing-grid">
+
+    <div class="price-card">
+      <div class="plan-badge" style="color:var(--color-text-secondary)">Starter</div>
+      <div class="plan-name">Clarity</div>
+      <div class="plan-price">Free <span>forever</span></div>
+      <div class="plan-desc">Get a clear view. No credit card needed.</div>
+      <ul class="plan-features">
+        <li>1 bank account connected</li>
+        <li>30-day spending history</li>
+        <li>Auto-categorisation (10 categories)</li>
+        <li>Monthly summary email</li>
+      </ul>
+    </div>
+
+    <div class="price-card featured">
+      <div class="popular-badge">Most popular</div>
+      <div class="plan-badge" style="color:var(--color-text-info)">Pro</div>
+      <div class="plan-name">Control</div>
+      <div class="plan-price">$9 <span>/ month</span></div>
+      <div class="plan-desc">For people serious about financial clarity.</div>
+      <ul class="plan-features">
+        <li>Unlimited accounts + cards</li>
+        <li>Full 12-month history</li>
+        <li>Subscription tracker + alerts</li>
+        <li>Custom spending categories</li>
+        <li>Visual cash flow map</li>
+        <li>Weekly digest + anomaly alerts</li>
+        <li>Shared household view (2 users)</li>
+      </ul>
+    </div>
+
+    <div class="price-card">
+      <div class="plan-badge" style="color:var(--color-text-secondary)">Premium</div>
+      <div class="plan-name">Mastery</div>
+      <div class="plan-price">$24 <span>/ month</span></div>
+      <div class="plan-desc">For couples, freelancers, and power users.</div>
+      <ul class="plan-features">
+        <li>Everything in Control</li>
+        <li>Up to 5 users / family plan</li>
+        <li>AI-powered savings nudges</li>
+        <li>Net worth dashboard</li>
+        <li>Export to CSV / Notion / Sheets</li>
+        <li>Priority support (24hr response)</li>
+        <li>Early access to new features</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Guarantee -->
+  <div class="section-label">Risk reversal</div>
+  <h2>Our guarantee</h2>
+  <div class="guarantee-box">
+    <div class="g-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--color-text-success)"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+    </div>
+    <div>
+      <h3>60-day full refund. No questions, no forms, no guilt.</h3>
+      <p>If FlowTrack doesn't show you at least one surprise about your spending in the first 60 days, we refund every cent and thank you for trying. We're confident enough in the product to take the risk so you don't have to.</p>
+    </div>
+  </div>
+  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+    <div class="icp-card" style="flex:1;min-width:160px"><div class="icp-name" style="font-size:13px">No credit card for free tier</div><div class="icp-desc">Start with zero commitment.</div></div>
+    <div class="icp-card" style="flex:1;min-width:160px"><div class="icp-name" style="font-size:13px">Cancel in 2 clicks</div><div class="icp-desc">No retention walls. No dark patterns.</div></div>
+    <div class="icp-card" style="flex:1;min-width:160px"><div class="icp-name" style="font-size:13px">Data export on cancel</div><div class="icp-desc">Your data stays yours, always.</div></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Competitor comparison -->
+  <div class="section-label">Why us</div>
+  <h2>How we compare</h2>
+  <div style="overflow-x:auto">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th class="us">FlowTrack</th>
+          <th>Mint (RIP)</th>
+          <th>YNAB</th>
+          <th>Spreadsheet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Setup time</td><td class="us">Under 3 min</td><td>~20 min</td><td>~45 min</td><td>Hours</td></tr>
+        <tr><td>Visual cash flow map</td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+        <tr><td>Subscription tracker</td><td><span class="check">✓</span></td><td>Partial</td><td><span class="cross">✗</span></td><td>Manual</td></tr>
+        <tr><td>Behavioral pattern alerts</td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+        <tr><td>Free tier (no card)</td><td><span class="check">✓</span></td><td>Discontinued</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Family / shared plan</td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td>Extra cost</td><td>Manual</td></tr>
+        <tr><td>60-day guarantee</td><td><span class="check">✓</span></td><td>N/A</td><td>34-day only</td><td>N/A</td></tr>
+        <tr><td>Data never sold</td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="tag">Start today</div>
+    <h1 style="margin-bottom:.5rem">See where your money actually goes</h1>
+    <p class="sub" style="margin:0 auto 1.5rem">Free forever. No credit card. Upgrade when you're ready.</p>
+    <button class="cta-btn" onclick="sendPrompt('Help me write the onboarding copy for FlowTrack')">Build the onboarding copy ↗</button>
+    <div class="cta-note">or ask me to expand any section of this offer</div>
+  </div>
+
+</div>
