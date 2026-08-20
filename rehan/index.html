@@ -391,6 +391,7 @@ body.chill #emojiRain{display:none}
           <button class="btn lime sm" id="dlMemeBtn">⬇️ download</button>
           <button class="btn cyan sm" id="randMemeBtn">🎲 randomize</button>
         </div>
+        <p class="hint" style="margin-top:12px">download blocked? right-click / long-press the meme → save image 📸</p>
       </div>
     </div>
   </section>
@@ -1106,12 +1107,31 @@ $("#randMemeBtn").addEventListener("click", () => {
   drawMeme();
   audio(); SOUNDS[0].fn(AC.currentTime + .02);
 });
-$("#dlMemeBtn").addEventListener("click", () => {
+$("#dlMemeBtn").addEventListener("click", async () => {
+  const filename = "rehan-meme-" + Date.now() + ".png";
+  /* hosted viewers mediate saves through the downloads capability;
+     everywhere else (netlify, local file) a plain link still works */
+  const dl = window.claude && typeof window.claude.use === "function"
+    ? await window.claude.use("downloads").catch(() => null)
+    : null;
+  if (dl) {
+    try {
+      const blob = await new Promise(r => mc.toBlob(r, "image/png"));
+      await dl.save({ filename, data: blob });
+      toast("saved! now go post it 😈");
+    } catch (err) {
+      const code = err && err.code;
+      if (code === "declined") toast("no worries, the meme lives here 🫡");
+      else if (code === "rate_limited") toast("one at a time 😅 try again in a sec");
+      else toast("couldn't save — long-press the meme instead 📸");
+    }
+    return;
+  }
   const a = document.createElement("a");
-  a.download = "rehan-meme-" + Date.now() + ".png";
+  a.download = filename;
   a.href = mc.toDataURL("image/png");
   a.click();
-  toast("downloaded! now go post it 😈");
+  toast("saved! if not — long-press the meme to save 📸");
 });
 
 /* ===================================================================
