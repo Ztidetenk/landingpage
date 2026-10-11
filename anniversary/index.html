@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <title>365 Days · Akansha</title>
+
+  <!-- Inter as a variable font (weights 100–800) so font-weight can animate smoothly -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================
+       1. DESIGN TOKENS — tweak colours, sizes and timing here
+       ========================================================= */
+    :root {
+      --bg:          #0a0a0b;               /* page background */
+      --text:        #f3efe8;               /* main off-white text */
+      --muted:       rgba(243, 239, 232, .42);
+      --faint:       rgba(243, 239, 232, .08);
+      --glow:        #ffcdb5;               /* warm glow colour for the line */
+      --glow-soft:   rgba(255, 205, 181, .45);
+
+      /* Position of the glowing line (overridden per breakpoint below) */
+      --line-x:      20px;
+      --rail-top:    150px;                 /* space reserved for "Ahmedabad" */
+      --rail-bottom: 96px;                  /* space reserved for "Delhi" */
+
+      /* Reveal animation (JS writes --reveal-duration from CONFIG) */
+      --reveal-duration: 1400ms;
+      --reveal-ease:     cubic-bezier(.16, 1, .3, 1);
+      --reveal-shift:    28px;
+
+      /* Updated live by JS: 0 at Ahmedabad, 1 at Delhi */
+      --progress: 0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 300;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--glow); color: var(--bg); }
+
+    /* =========================================================
+       2. THE GLOWING LINE (fixed to the viewport)
+       ========================================================= */
+    .rail {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: var(--line-x);
+      width: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Vertical city labels, centred on the line */
+    .rail__label {
+      position: absolute;
+      left: 0;
+      transform: translateX(-50%) rotate(180deg);
+      writing-mode: vertical-rl;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: .38em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: color 1.2s ease, text-shadow 1.2s ease;
+    }
+    .rail__label--top    { top: 28px; color: var(--text); }
+    .rail__label--bottom { bottom: 22px; }
+
+    /* Lights up once she "arrives" in Delhi */
+    .rail.is-arrived .rail__label--bottom {
+      color: var(--glow);
+      text-shadow: 0 0 12px var(--glow-soft);
+    }
+
+    /* Dim, unlit track */
+    .rail__track {
+      position: absolute;
+      top: var(--rail-top);
+      bottom: var(--rail-bottom);
+      left: -0.5px;
+      width: 1px;
+      background: var(--faint);
+    }
+
+    /* The glowing part that grows with scroll */
+    .rail__fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: calc(var(--progress) * 100%);
+      background: linear-gradient(to bottom, rgba(243, 239, 232, .25), var(--glow));
+      box-shadow:
+        0 0 6px  var(--glow-soft),
+        0 0 18px var(--glow-soft);
+    }
+
+    /* The travelling point of light at the tip */
+    .rail__dot {
+      position: absolute;
+      left: 0;
+      top: calc(var(--progress) * 100%);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      transform: translate(-50%, -50%);
+      box-shadow:
+        0 0 6px 1px #fff,
+        0 0 16px 4px var(--glow),
+        0 0 36px 10px var(--glow-soft);
+    }
+    .rail.is-arrived .rail__dot { animation: heartbeat 2.4s ease-in-out infinite; }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      14%      { transform: translate(-50%, -50%) scale(1.6); }
+      28%      { transform: translate(-50%, -50%) scale(1); }
+      42%      { transform: translate(-50%, -50%) scale(1.4); }
+    }
+
+    /* Small kilometre readout beside the dot (hidden on phones) */
+    .rail__km {
+      position: absolute;
+      left: 16px;
+      top: calc(var(--progress) * 100%);
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: .2em;
+      color: var(--muted);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Checkpoints for each chapter (created by JS) */
+    .rail__tick {
+      position: absolute;
+      left: 0;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid rgba(243, 239, 232, .22);
+      transform: translate(-50%, -50%);
+      transition: background .6s ease, border-color .6s ease, box-shadow .6s ease;
+    }
+    .rail__tick.is-passed {
+      background: var(--glow);
+      border-color: var(--glow);
+      box-shadow: 0 0 10px var(--glow-soft);
+    }
+
+    /* =========================================================
+       3. PAGE LAYOUT
+       ========================================================= */
+    main {
+      /* Keep text clear of the line on small screens */
+      padding-left: calc(var(--line-x) + 34px);
+      padding-right: 22px;
+    }
+
+    .section {
+      min-height: 100vh;
+      min-height: 100svh;
+      max-width: 620px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 18vh 0;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-top: 12vh; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: .34em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero__number {
+      font-size: clamp(6.5rem, 30vw, 13rem);
+      line-height: .9;
+      letter-spacing: -.06em;
+      margin: 1.6rem 0 .4rem -.06em;
+      text-shadow: 0 0 40px rgba(255, 205, 181, .18);
+    }
+
+    .hero__unit {
+      font-size: clamp(1rem, 4vw, 1.25rem);
+      letter-spacing: .5em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .hero__date {
+      margin-top: 2.6rem;
+      font-size: clamp(1.4rem, 5.5vw, 2rem);
+      line-height: 1.3;
+      letter-spacing: -.02em;
+    }
+
+    .hero__sub {
+      margin-top: .7rem;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* Scroll cue: a thin line that keeps "dripping" downward */
+    .scroll-cue {
+      margin-top: 4.5rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 10px;
+      letter-spacing: .34em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .scroll-cue__line {
+      position: relative;
+      width: 1px;
+      height: 46px;
+      background: var(--faint);
+      overflow: hidden;
+    }
+    .scroll-cue__line::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: -50%;
+      width: 1px;
+      height: 50%;
+      background: var(--glow);
+      box-shadow: 0 0 8px var(--glow);
+      animation: drip 2.2s cubic-bezier(.6, 0, .4, 1) infinite;
+    }
+    @keyframes drip {
+      to { top: 100%; }
+    }
+
+    /* ---------- Letter chapters ---------- */
+    .chapter__num {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: .2em;
+      color: var(--glow);
+      margin-bottom: 1.4rem;
+    }
+
+    .chapter__title {
+      font-size: clamp(1.9rem, 7vw, 3rem);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+      margin-bottom: 2rem;
+    }
+
+    .chapter p {
+      font-size: clamp(1.05rem, 3.9vw, 1.2rem);
+      color: rgba(243, 239, 232, .78);
+    }
+    .chapter p + p { margin-top: 1.3rem; }
+
+    /* A quiet emphasis style for lines you want to stand out */
+    .chapter .whisper {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    /* ---------- Footer / Delhi ---------- */
+    .finale {
+      text-align: left;
+      padding-bottom: calc(var(--rail-bottom) + 12vh);
+    }
+
+    .marker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 3rem;
+    }
+    .marker__pin {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--glow);
+      box-shadow: 0 0 10px var(--glow), 0 0 28px var(--glow-soft);
+    }
+    .marker__text {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: .4em;
+      text-transform: uppercase;
+      color: var(--glow);
+    }
+
+    .finale__line {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 2.4rem;
+    }
+
+    .finale__title {
+      font-size: clamp(2.2rem, 9vw, 3.8rem);
+      line-height: 1.08;
+      letter-spacing: -.04em;
+    }
+    .finale__title .name {
+      color: var(--glow);
+      text-shadow: 0 0 28px rgba(255, 205, 181, .35);
+    }
+
+    .finale__sign {
+      margin-top: 3rem;
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
+    .finale__sign strong {
+      display: block;
+      margin-top: .2rem;
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -.02em;
+    }
+
+    /* =========================================================
+       4. SCROLL-TRIGGERED REVEAL
+       Elements with [data-reveal] start hidden + thin, then
+       fade in, slide up and gain weight when .is-visible is added.
+       Use data-weight="100" / "600" etc. to set the final weight.
+       ========================================================= */
+    [data-reveal] {
+      opacity: 0;
+      transform: translate3d(0, var(--reveal-shift), 0);
+      filter: blur(6px);
+      font-weight: 100;
+      transition:
+        opacity     var(--reveal-duration) var(--reveal-ease),
+        transform   var(--reveal-duration) var(--reveal-ease),
+        filter      var(--reveal-duration) var(--reveal-ease),
+        font-weight calc(var(--reveal-duration) * 1.4) var(--reveal-ease);
+      transition-delay: var(--delay, 0ms);
+      will-change: opacity, transform;
+    }
+
+    [data-reveal].is-visible {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      font-weight: var(--weight-to, 300);
+    }
+
+    /* =========================================================
+       5. RESPONSIVE
+       ========================================================= */
+    @media (min-width: 640px) {
+      :root { --line-x: 40px; }
+      main  { padding-left: calc(var(--line-x) + 64px); padding-right: 48px; }
+    }
+
+    /* Wide screens: centre the text column and park the line
+       a comfortable distance to its left */
+    @media (min-width: 1000px) {
+      :root { --line-x: calc(50vw - 410px); }
+      main  { padding-left: 0; padding-right: 0; }
+    }
+
+    @media (max-width: 639px) {
+      .rail__km    { display: none; }
+      .rail__label { font-size: 9px; letter-spacing: .32em; }
+      :root        { --rail-top: 128px; --rail-bottom: 82px; }
+    }
+
+    /* Respect people who prefer less motion */
+    @media (prefers-reduced-motion: reduce) {
+      [data-reveal] { transition: opacity .6s ease; transform: none; filter: none; }
+      .scroll-cue__line::after,
+      .rail.is-arrived .rail__dot { animation: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =======================================================
+       THE LINE: Ahmedabad (top) → Delhi (bottom)
+       ======================================================= -->
+  <div class="rail" id="rail" aria-hidden="true">
+    <span class="rail__label rail__label--top">Ahmedabad</span>
+    <div class="rail__track" id="railTrack">
+      <div class="rail__fill"></div>
+      <div class="rail__dot"></div>
+      <span class="rail__km" id="railKm">0 km</span>
+    </div>
+    <span class="rail__label rail__label--bottom">Delhi</span>
+  </div>
+
+  <main>
+
+    <!-- ===================== SECTION 1 · HERO ===================== -->
+    <section class="section hero">
+      <p class="eyebrow" data-reveal>11.10.2025 — 11.10.2026</p>
+
+      <h1 class="hero__number" data-reveal data-weight="200">365</h1>
+      <p class="hero__unit" data-reveal data-weight="300">days</p>
+
+      <p class="hero__date" data-reveal data-weight="400">October 11.</p>
+      <p class="hero__sub" data-reveal>One year of us, written mostly in text.</p>
+
+      <div class="scroll-cue" data-reveal>
+        <span class="scroll-cue__line"></span>
+        <span>Scroll slowly</span>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 2 ===================== -->
+    <!-- ✏️ Replace the title and paragraphs below with your own words -->
+    <section class="section chapter">
+      <p class="chapter__num" data-reveal>01</p>
+      <h2 class="chapter__title" data-reveal data-weight="500">It started with a message.</h2>
+      <p data-reveal>
+        One small "hi" on a screen, and somehow it turned into the most important
+        conversation I've ever had. I still remember waiting for that first reply.
+      </p>
+      <p data-reveal>
+        I didn't know it then, but that chat was about to become my favourite place to be.
+      </p>
+    </section>
+
+    <!-- ===================== SECTION 3 ===================== -->
+    <section class="section chapter">
+      <p class="chapter__num" data-reveal>02</p>
+      <h2 class="chapter__title" data-reveal data-weight="500">Between the lines.</h2>
+      <p data-reveal>
+        From the good-morning texts to the long paragraphs, from the inside jokes
+        to the emojis only we understand — you've filled a whole year with words.
+      </p>
+      <p data-reveal>
+        I've learned to read you in the little things: how you type when you're happy,
+        the pauses when you're thinking, the "..." that means everything.
+      </p>
+      <p class="whisper" data-reveal data-weight="400">Every notification with your name on it still makes me smile.</p>
+    </section>
+
+    <!-- ===================== SECTION 4 ===================== -->
+    <section class="section chapter">
+      <p class="chapter__num" data-reveal>03</p>
+      <h2 class="chapter__title" data-reveal data-weight="500">The rare voice notes.</h2>
+      <p data-reveal>
+        We don't send many. Maybe that's why each one feels like a small gift —
+        a few seconds of your voice that I end up playing more than once.
+      </p>
+      <p data-reveal>
+        They're short, they're rare, and they're some of my favourite sounds in the world.
+      </p>
+    </section>
+
+    <!-- ===================== SECTION 5 ===================== -->
+    <section class="section chapter">
+      <p class="chapter__num" data-reveal>04</p>
+      <h2 class="chapter__title" data-reveal data-weight="500">To the miles between us.</h2>
+      <p data-reveal>
+        Ahmedabad to Delhi is a long way on a map. On a screen, it's one tap.
+      </p>
+      <p data-reveal>
+        The distance has never felt like a wall — more like a line we keep drawing
+        closer, one message at a time. This line, right here, is ours.
+      </p>
+      <p class="whisper" data-reveal data-weight="400">And every kilometre of it has been worth it.</p>
+    </section>
+
+    <!-- ===================== SECTION 6 · FOOTER / DELHI ===================== -->
+    <footer class="section finale">
+      <div class="marker" data-reveal>
+        <span class="marker__pin"></span>
+        <span class="marker__text">Delhi</span>
+      </div>
+
+      <p class="finale__line" data-reveal>You made it to the end of the line. I'm right here.</p>
+
+      <h2 class="finale__title" data-reveal data-weight="300">
+        Happy 1-Year Anniversary,<br />
+        <span class="name">Akansha.</span>
+      </h2>
+
+      <p class="finale__sign" data-reveal>
+        Love,
+        <strong>Smit.</strong>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    /* =========================================================
+       CONFIG — the knobs you'll most likely want to adjust
+       ========================================================= */
+    const CONFIG = {
+      // How much of an element must be visible before it animates in (0 → 1).
+      // 0.15 = as soon as 15% of it is on screen.
+      revealThreshold: 0.15,
+
+      // Shrinks the "trigger zone" so text animates a bit after it enters.
+      // '-10%' at the bottom = wait until it's 10% above the bottom edge.
+      revealRootMargin: '0px 0px -10% 0px',
+
+      // Length of each fade/slide/weight transition in milliseconds.
+      revealDuration: 1400,
+
+      // Delay between items in the same section (makes them cascade in).
+      staggerDelay: 160,
+
+      // Default final font-weight for revealed text (thin → this).
+      // Individual elements can override with data-weight="500" etc.
+      defaultWeight: 300,
+
+      // true  = text fades out again when scrolled away and re-animates.
+      // false = each line animates once and stays.
+      repeatReveal: false,
+
+      // Rough road distance Ahmedabad → Delhi, shown beside the glowing dot.
+      distanceKm: 950,
+
+      // Progress (0 → 1) at which the line counts as "arrived" in Delhi.
+      arriveAt: 0.985
+    };
+
+    /* =========================================================
+       1. SCROLL-TRIGGERED TEXT (IntersectionObserver)
+       ========================================================= */
+    const root = document.documentElement;
+    root.style.setProperty('--reveal-duration', CONFIG.revealDuration + 'ms');
+
+    const revealEls = document.querySelectorAll('[data-reveal]');
+
+    // Give each element its stagger delay (based on its order within its section)
+    // and its target font-weight.
+    document.querySelectorAll('.section').forEach(section => {
+      section.querySelectorAll('[data-reveal]').forEach((el, i) => {
+        el.style.setProperty('--delay', (i * CONFIG.staggerDelay) + 'ms');
+        el.style.setProperty('--weight-to', el.dataset.weight || CONFIG.defaultWeight);
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            if (!CONFIG.repeatReveal) observer.unobserve(entry.target);
+          } else if (CONFIG.repeatReveal) {
+            entry.target.classList.remove('is-visible');
+          }
+        });
+      }, {
+        threshold: CONFIG.revealThreshold,
+        rootMargin: CONFIG.revealRootMargin
+      });
+
+      revealEls.forEach(el => observer.observe(el));
+    } else {
+      // Very old browsers: just show everything.
+      revealEls.forEach(el => el.classList.add('is-visible'));
+    }
+
+    /* =========================================================
+       2. THE GLOWING LINE — fills as you scroll
+       ========================================================= */
+    const rail   = document.getElementById('rail');
+    const track  = document.getElementById('railTrack');
+    const kmText = document.getElementById('railKm');
+    const chapters = document.querySelectorAll('.chapter, .finale');
+    let ticks = [];
+
+    // How far down the page we are, from 0 (top) to 1 (bottom).
+    function getScrollProgress() {
+      const max = root.scrollHeight - window.innerHeight;
+      return max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 1;
+    }
+
+    // Place a small checkpoint on the line for each chapter, at the
+    // scroll progress where that chapter sits in the middle of the screen.
+    function buildTicks() {
+      ticks.forEach(t => t.el.remove());
+      ticks = [];
+      const max = root.scrollHeight - window.innerHeight;
+      if (max <= 0) return;
+
+      chapters.forEach(ch => {
+        const rect = ch.getBoundingClientRect();
+        const centre = rect.top + window.scrollY + rect.height / 2 - window.innerHeight / 2;
+        const pos = Math.min(Math.max(centre / max, 0), 1);
+        const el = document.createElement('span');
+        el.className = 'rail__tick';
+        el.style.top = (pos * 100) + '%';
+        track.appendChild(el);
+        ticks.push({ el, pos });
+      });
+    }
+
+    // Push the latest progress into CSS + update km and checkpoints.
+    function updateLine() {
+      const p = getScrollProgress();
+      rail.style.setProperty('--progress', p.toFixed(4));
+      kmText.textContent = Math.round(p * CONFIG.distanceKm) + ' km';
+      ticks.forEach(t => t.el.classList.toggle('is-passed', p >= t.pos - 0.002));
+      rail.classList.toggle('is-arrived', p >= CONFIG.arriveAt);
+    }
+
+    // requestAnimationFrame keeps scrolling smooth (max one update per frame).
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateLine();
+        ticking = false;
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => { buildTicks(); updateLine(); });
+    window.addEventListener('load',   () => { buildTicks(); updateLine(); });
+
+    // Fonts can change the page height once loaded — re-measure.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { buildTicks(); updateLine(); });
+    }
+
+    buildTicks();
+    updateLine();
+  </script>
+</body>
+</html>
