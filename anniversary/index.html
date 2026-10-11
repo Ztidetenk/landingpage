@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#0a0a0b" />
   <title>365 Days · Akansha</title>
 
-  <!-- Inter as a variable font (weights 100–800) so font-weight can animate smoothly -->
+  <!-- Inter as a variable font (weights 100 to 800) so font-weight can animate smoothly -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..800&display=swap" rel="stylesheet" />
 
   <style>
     /* =========================================================
-       1. DESIGN TOKENS — tweak colours, sizes and timing here
+       1. DESIGN TOKENS: tweak colours, sizes and timing here
        ========================================================= */
     :root {
       --bg:          #0a0a0b;               /* page background */
@@ -332,6 +332,13 @@
       text-shadow: 0 0 28px rgba(255, 205, 181, .35);
     }
 
+    .finale__note {
+      margin-top: 2.2rem;
+      max-width: 34ch;
+      font-size: clamp(1.05rem, 3.9vw, 1.2rem);
+      color: rgba(243, 239, 232, .78);
+    }
+
     .finale__sign {
       margin-top: 3rem;
       font-size: 1.15rem;
@@ -422,7 +429,7 @@
 
     <!-- ===================== SECTION 1 · HERO ===================== -->
     <section class="section hero">
-      <p class="eyebrow" data-reveal>11.10.2025 — 11.10.2026</p>
+      <p class="eyebrow" data-reveal>11.10.2025 · 11.10.2026</p>
 
       <h1 class="hero__number" data-reveal data-weight="200">365</h1>
       <p class="hero__unit" data-reveal data-weight="300">days</p>
@@ -437,16 +444,16 @@
     </section>
 
     <!-- ===================== SECTION 2 ===================== -->
-    <!-- ✏️ Replace the title and paragraphs below with your own words -->
     <section class="section chapter">
       <p class="chapter__num" data-reveal>01</p>
       <h2 class="chapter__title" data-reveal data-weight="500">It started with a message.</h2>
       <p data-reveal>
-        One small "hi" on a screen, and somehow it turned into the most important
-        conversation I've ever had. I still remember waiting for that first reply.
+        A year ago, a few words landed on my screen and quietly rearranged my whole life.
+        I never knew a single text could feel like the beginning of something. Yours did.
       </p>
       <p data-reveal>
-        I didn't know it then, but that chat was about to become my favourite place to be.
+        I've read thousands of messages since then, and none of them have ever made my
+        heart jump the way your name still does when it lights up my phone.
       </p>
     </section>
 
@@ -455,14 +462,15 @@
       <p class="chapter__num" data-reveal>02</p>
       <h2 class="chapter__title" data-reveal data-weight="500">Between the lines.</h2>
       <p data-reveal>
-        From the good-morning texts to the long paragraphs, from the inside jokes
-        to the emojis only we understand — you've filled a whole year with words.
+        You live in my chats now. In the good-morning texts, the long paragraphs, the inside
+        jokes nobody else would ever get, and the emojis that somehow say exactly what we mean.
       </p>
       <p data-reveal>
-        I've learned to read you in the little things: how you type when you're happy,
-        the pauses when you're thinking, the "..." that means everything.
+        I've learned to read you without hearing you. I know how you type when you're happy,
+        when you're tired, when something is on your mind and you haven't said it yet.
+        I love every version of you that shows up on my screen.
       </p>
-      <p class="whisper" data-reveal data-weight="400">Every notification with your name on it still makes me smile.</p>
+      <p class="whisper" data-reveal data-weight="400">Somewhere in all those words, you became my favourite person.</p>
     </section>
 
     <!-- ===================== SECTION 4 ===================== -->
@@ -470,11 +478,12 @@
       <p class="chapter__num" data-reveal>03</p>
       <h2 class="chapter__title" data-reveal data-weight="500">The rare voice notes.</h2>
       <p data-reveal>
-        We don't send many. Maybe that's why each one feels like a small gift —
-        a few seconds of your voice that I end up playing more than once.
+        We don't send many, and maybe that's exactly why they mean so much. Every voice note
+        from you feels like finding a letter tucked inside a book I thought I'd finished.
       </p>
       <p data-reveal>
-        They're short, they're rare, and they're some of my favourite sounds in the world.
+        A few seconds of your voice and the whole day turns softer. I keep them. I replay them.
+        And I'm not even a little embarrassed about it.
       </p>
     </section>
 
@@ -483,13 +492,14 @@
       <p class="chapter__num" data-reveal>04</p>
       <h2 class="chapter__title" data-reveal data-weight="500">To the miles between us.</h2>
       <p data-reveal>
-        Ahmedabad to Delhi is a long way on a map. On a screen, it's one tap.
+        Ahmedabad and Delhi sit far apart on a map. Hundreds of kilometres of road, cities,
+        fields and sky stretch between your window and mine.
       </p>
       <p data-reveal>
-        The distance has never felt like a wall — more like a line we keep drawing
-        closer, one message at a time. This line, right here, is ours.
+        But distance has a funny way of showing you what's real. It never once made me love
+        you less. It only made me certain that this, us, is worth every single kilometre.
       </p>
-      <p class="whisper" data-reveal data-weight="400">And every kilometre of it has been worth it.</p>
+      <p class="whisper" data-reveal data-weight="400">This glowing line is us. Every scroll brings me a little closer to you.</p>
     </section>
 
     <!-- ===================== SECTION 6 · FOOTER / DELHI ===================== -->
@@ -506,6 +516,11 @@
         <span class="name">Akansha.</span>
       </h2>
 
+      <p class="finale__note" data-reveal>
+        Thank you for a year of words I'll keep forever. Here's to every year after this one,
+        and to the day there's no line left between us at all.
+      </p>
+
       <p class="finale__sign" data-reveal>
         Love,
         <strong>Smit.</strong>
@@ -516,7 +531,7 @@
 
   <script>
     /* =========================================================
-       CONFIG — the knobs you'll most likely want to adjust
+       CONFIG: the knobs you'll most likely want to adjust
        ========================================================= */
     const CONFIG = {
       // How much of an element must be visible before it animates in (0 → 1).
@@ -587,7 +602,7 @@
     }
 
     /* =========================================================
-       2. THE GLOWING LINE — fills as you scroll
+       2. THE GLOWING LINE: fills as you scroll
        ========================================================= */
     const rail   = document.getElementById('rail');
     const track  = document.getElementById('railTrack');
@@ -645,7 +660,7 @@
     window.addEventListener('resize', () => { buildTicks(); updateLine(); });
     window.addEventListener('load',   () => { buildTicks(); updateLine(); });
 
-    // Fonts can change the page height once loaded — re-measure.
+    // Fonts can change the page height once loaded, so re-measure.
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(() => { buildTicks(); updateLine(); });
     }
